@@ -5,10 +5,10 @@
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "skipLibCheck": true,
+        "esModuleInterop": true,
         "paths": {
-            "~/*": ["./*"]
+            "~/*": ["./src/*"]
         },
         "outDir": "./dist"
-    },
-    "exclude": ["migrate.ts"]
+    }
 }
