@@ -1,7 +1,7 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/mysql2";
+import { createPool } from "mysql2/promise";
 
-export const pool = new Pool({
+export const pool = createPool({
     // ...
 });
 
