@@ -4,7 +4,14 @@ import { bigint, boolean, int, json, mysqlTable, timestamp, varchar } from "driz
 
 export const user = mysqlTable("user", {
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-    // TODO: other user attributes
+    firstName: varchar("first_name", { length: 64 }).notNull(),
+    lastName: varchar("last_name", { length: 64 }).notNull(),
+    gender: varchar("gender", { length: 32 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
+    phoneNumber: varchar("phone_number", { length: 32 }).notNull(),
+    avatarUrl: varchar("avatar_url", { length: 255 }),
+    location: varchar("location", { length: 255 }),
+    isVerified: boolean("is_verified").notNull(),
 });
 
 // --- special tables for lucia auth
@@ -66,36 +73,75 @@ export const contract = mysqlTable("contract", {
     description: varchar("description", { length: 255 }).notNull(),
 });
 
-export const tradeGroup = mysqlTable("tradegroup", {
+export const tradeGroup = mysqlTable("trade_group", {
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-    userCount: int("user_count").notNull(),
-    tradeCount: int("trade_count").notNull(),
+    user1Id: int("user1_id").references(() => user.id),
+    user2Id: int("user2_id") // TEMPORARY, for one-to-one trade only
+        .notNull()
+        .references(() => user.id),
+    contractId: int("contract_id").references(() => contract.id),
     status: varchar("status", { length: 255 }).notNull(),
-    // TODO SABOTAN PA
 });
 
-export const trade = mysqlTable("trade", {
+export const tradeInventory = mysqlTable("trade_inventory", {
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     tradeGroupId: int("tradegroup_id")
         .notNull()
         .references(() => tradeGroup.id),
-    initiatorId: int("user_id").references(() => user.id),
-    receiverId: int("user_id").references(() => user.id), // TEMPORARY?
-    contractId: int("contract_id"),
+    senderId: int("user_id")
+        .notNull()
+        .references(() => user.id),
+    receiverId: int("user_id")
+        .notNull()
+        .references(() => user.id),
     inventoryId: int("inventory_id")
         .notNull()
         .references(() => inventory.id),
-    status: varchar("status", { length: 255 }).notNull(),
-    // TODO SABOTAN PA
-});
-
-export const transaction = mysqlTable("transaction", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    totalQuantity: int("total_quantity").notNull(),
+    completedQuantity: int("completed_quantity").notNull(),
     isCompleted: boolean("is_completed").notNull(),
-    proofUrls: json("proof_urls").notNull(), // json array of links
-    transactionDescription: varchar("transaction_description", { length: 255 }),
-    timestamp: timestamp("timestamp"),
-    // TODO
 });
 
-// TODO: tables for chat
+export const tradeTransaction = mysqlTable("trade_transaction", {
+    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    tradeInventoryId: int("tradeinventory_id")
+        .notNull()
+        .references(() => tradeInventory.id),
+    description: varchar("description", { length: 255 }),
+    proofUrls: json("proof_urls").notNull(), // json array of links
+    quantity: int("quantity").notNull(),
+    timestamp: timestamp("timestamp"),
+});
+
+export const chatRoom = mysqlTable("chat_room", {
+    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    member1Id: int("member1_id")
+        .notNull()
+        .references(() => user.id),
+    member2Id: int("member2_id")
+        .notNull()
+        .references(() => user.id),
+});
+
+export const chatMessage = mysqlTable("chat_message", {
+    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    chatRoomId: int("chatroom_id")
+        .notNull()
+        .references(() => chatRoom.id),
+    senderId: int("sender_id")
+        .notNull()
+        .references(() => user.id),
+    content: varchar("content", { length: 255 }).notNull(),
+    timestamp: timestamp("timestamp"),
+});
+
+export const notification = mysqlTable("notification", {
+    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    userId: int("user_id")
+        .notNull()
+        .references(() => user.id),
+    type: varchar("type", { length: 255 }).notNull(), // "matched", "completedTrade", "newOffer"
+    content: json("content").notNull(), // object with content, ids, or links depending on type
+    timestamp: timestamp("timestamp"),
+    isRead: boolean("is_read").notNull(),
+});
