@@ -4,8 +4,8 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "dev": "tsx watch ./app/server.ts",
-        "start": "tsx ./app/server.ts"
+        "dev": "tsx watch ./src/server.ts",
+        "start": "tsx ./src/server.ts"
     },
     "keywords": [],
     "author": "",
