@@ -1,1 +1,1 @@
-export const name = "test export";
+export const corsConfig = { origin: "*", credentials: true };
