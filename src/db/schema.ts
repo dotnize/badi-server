@@ -14,34 +14,6 @@ export const user = mysqlTable("user", {
     isVerified: boolean("is_verified").notNull(),
 });
 
-// --- special tables for lucia auth
-export const key = mysqlTable("user_key", {
-    id: varchar("id", {
-        length: 255,
-    }).primaryKey(),
-    userId: int("user_id")
-        .notNull()
-        .references(() => user.id),
-    hashedPassword: varchar("hashed_password", {
-        length: 255,
-    }),
-});
-export const session = mysqlTable("user_session", {
-    id: varchar("id", {
-        length: 128,
-    }).primaryKey(),
-    userId: int("user_id")
-        .notNull()
-        .references(() => user.id),
-    activeExpires: bigint("active_expires", {
-        mode: "number",
-    }).notNull(),
-    idleExpires: bigint("idle_expires", {
-        mode: "number",
-    }).notNull(),
-});
-// ---
-
 export const inventory = mysqlTable("inventory", {
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     userId: int("user_id")

@@ -4,7 +4,6 @@ Primary tech stack:
 
 -   Express 4 - https://expressjs.com/
 -   Drizzle ORM - https://orm.drizzle.team/ with MySQL
--   Lucia 2 - https://lucia-auth.com/
 -   Socket.IO 4 - https://socket.io/
 -   TypeScript 5 - https://www.typescriptlang.org/
 -   ESLint & Prettier
