@@ -25,6 +25,7 @@
 
     ```sh
     PORT=3001 # replace with any port you want
+    SESSION_SECRET=asd1234 # replace with a random string for security
 
     # MySQL database connection details
     MYSQL_HOST=localhost
