@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
-// GET /inventory
-export async function getAllInventory(req: Request, res: Response) {
+// GET /wish
+export async function getAllWish(req: Request, res: Response) {
     try {
         // TODO business logic, then respond using "res" object
     } catch (err) {
@@ -10,8 +10,8 @@ export async function getAllInventory(req: Request, res: Response) {
     }
 }
 
-// GET /inventory/user/:id   - req.params.id
-export async function getInventoryByUserId(req: Request, res: Response) {
+// GET /wish/user/:id   - req.params.id
+export async function getWishByUserId(req: Request, res: Response) {
     try {
         // TODO input validation from "req" object, business logic, then respond using "res" object
     } catch (err) {
@@ -20,8 +20,8 @@ export async function getInventoryByUserId(req: Request, res: Response) {
     }
 }
 
-// GET /inventory/:id   - req.params.id
-export async function getInventoryById(req: Request, res: Response) {
+// GET /wish/:id   - req.params.id
+export async function getWishById(req: Request, res: Response) {
     try {
         // TODO input validation from "req" object, business logic, then respond using "res" object
     } catch (err) {
@@ -30,8 +30,8 @@ export async function getInventoryById(req: Request, res: Response) {
     }
 }
 
-// POST /inventory  - req.body (json body sa request)
-export async function createInventory(req: Request, res: Response) {
+// POST /wish  - req.body (json body sa request)
+export async function createWish(req: Request, res: Response) {
     try {
         // TODO input validation from "req" object, business logic, then respond using "res" object
     } catch (err) {
@@ -40,13 +40,13 @@ export async function createInventory(req: Request, res: Response) {
     }
 }
 
-// PUT /inventory/:id   - req.params.id and req.body
-export async function updateInventory(req: Request, res: Response) {
+// PUT /wish/:id   - req.params.id and req.body
+export async function updateWish(req: Request, res: Response) {
     try {
         // TODO input validation from "req" object, business logic, then respond using "res" object
         // validation examples:
-        // - check if inventory exists using id
-        // - check if current session user owns the inventory (compare req.session.user.id and inventory.userId)
+        // - check if wish exists using id
+        // - check if current session user owns the wish (compare req.session.user.id and wish.userId)
         // then req.body should contain the new values for the update query
     } catch (err) {
         console.error(err);
@@ -54,13 +54,13 @@ export async function updateInventory(req: Request, res: Response) {
     }
 }
 
-// DELETE /inventory/:id    - req.params.id
-export async function deleteInventory(req: Request, res: Response) {
+// DELETE /wish/:id    - req.params.id
+export async function deleteWish(req: Request, res: Response) {
     try {
         // TODO input validation from "req" object, business logic, then respond using "res" object
         // validation examples:
-        // - check if inventory exists using id
-        // - check if current session user owns the inventory (compare req.session.user.id and inventory.userId)
+        // - check if wish exists using id
+        // - check if current session user owns the wish (compare req.session.user.id and wish.userId)
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });

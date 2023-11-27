@@ -11,5 +11,6 @@ router
     .delete(inventoryService.deleteInventory);
 
 router.route("/").get(inventoryService.getAllInventory).post(inventoryService.createInventory);
+router.get("/user/:id", inventoryService.getInventoryByUserId);
 
 export default router;
