@@ -148,7 +148,8 @@ export const notification = mysqlTable("notification", {
     isDeleted: boolean("is_deleted"),
 });
 
-type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+type Expand<T> = T extends unknown ? { [K in keyof T]: Expand<T[K]> } : never;
+type MakeOptional<T, K extends keyof T> = Expand<Omit<T, K> & Partial<Pick<T, K>>>;
 
 // types
 export type User = MakeOptional<typeof user.$inferSelect, "isDeleted">;
