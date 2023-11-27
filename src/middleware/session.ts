@@ -14,13 +14,11 @@ const sessionStore = new MySQLStore({
 });
 
 declare module "express-session" {
-    // eslint-disable-next-line no-unused-vars
     interface SessionData {
         user: User;
     }
 }
 declare module "http" {
-    // eslint-disable-next-line no-unused-vars
     interface IncomingMessage {
         session: session.Session & {
             user: User;
@@ -33,13 +31,13 @@ export default session.default({
     secret: process.env.SESSION_SECRET || "make sure to change this!",
     resave: false,
     saveUninitialized: false,
-    name: "badi",
+    name: "badi_session",
     proxy: true,
     cookie: {
-        maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
+        maxAge: 120 * 24 * 60 * 60 * 1000, // 90 days
         secure: process.env.NODE_ENV === "production" ? true : false,
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        sameSite: "none",
     },
     genid: function () {
         return nanoid(21);
