@@ -4,10 +4,11 @@ import { boolean, int, json, mysqlTable, timestamp, varchar } from "drizzle-orm/
 
 export const user = mysqlTable("user", {
     id: int("id").primaryKey().autoincrement(),
+    email: varchar("email", { length: 255 }).notNull(),
+    password: varchar("password", { length: 255 }).notNull(),
     firstName: varchar("first_name", { length: 64 }).notNull(),
     lastName: varchar("last_name", { length: 64 }).notNull(),
     gender: varchar("gender", { length: 32 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull(),
     phoneNumber: varchar("phone_number", { length: 32 }).notNull(),
     avatarUrl: varchar("avatar_url", { length: 255 }),
     location: varchar("location", { length: 255 }),
