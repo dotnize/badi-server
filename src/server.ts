@@ -13,7 +13,7 @@ const app = express();
 // middleware
 app.use(helmet());
 app.use(cors(corsConfig));
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // for deployments behind a proxy
