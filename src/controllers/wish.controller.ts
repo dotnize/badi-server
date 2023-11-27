@@ -11,5 +11,6 @@ router
     .delete(wishService.deleteWish);
 
 router.route("/").get(wishService.getAllWish).post(wishService.createWish);
+router.get("/user/:id", wishService.getWishByUserId);
 
 export default router;
