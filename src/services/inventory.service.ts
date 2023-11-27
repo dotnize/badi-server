@@ -1,9 +1,15 @@
 import type { Request, Response } from "express";
 
-// GET /inventory   - no input/params, ditso ra
+// GET /inventory   - optional req.query (example: ?userId=4)
 export async function getAllInventory(req: Request, res: Response) {
     try {
         // TODO business logic, then respond using "res" object
+        // example:
+        if (req.query.userId) {
+            // get all inventory of user with id req.query.userId
+        } else {
+            // if no query, get all inventories
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
