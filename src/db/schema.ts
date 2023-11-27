@@ -8,9 +8,9 @@ export const user = mysqlTable("user", {
     firstName: varchar("first_name", { length: 64 }).notNull(),
     lastName: varchar("last_name", { length: 64 }).notNull(),
     gender: varchar("gender", { length: 32 }).notNull(),
-    phoneNumber: varchar("phone_number", { length: 32 }).notNull(),
+    phoneNumber: varchar("phone_number", { length: 32 }),
     avatarUrl: varchar("avatar_url", { length: 255 }),
-    location: varchar("location", { length: 255 }),
+    location: varchar("location", { length: 255 }).notNull(),
     isVerified: boolean("is_verified").notNull(),
 });
 
