@@ -20,6 +20,7 @@ export const user = mysqlTable("user", {
     avatarUrl: varchar("avatar_url", { length: 255 }),
     location: varchar("location", { length: 255 }).notNull(),
     verified: tinyint("verified").notNull(),
+    isDeleted: boolean("is_deleted"),
 });
 
 export const userPassword = mysqlTable("user_password", {
@@ -42,6 +43,7 @@ export const inventory = mysqlTable("inventory", {
     description: varchar("description", { length: 255 }).notNull(),
     imageUrls: json("image_urls").notNull(), // json array of links
     preferredOffer: varchar("preferred_offer", { length: 255 }),
+    isDeleted: boolean("is_deleted"),
 });
 
 export const wish = mysqlTable("wish", {
@@ -54,12 +56,14 @@ export const wish = mysqlTable("wish", {
     keywords: json("keywords").notNull(), // json array of strings
     description: varchar("description", { length: 255 }).notNull(),
     imageUrls: json("image_urls").notNull(), // json array of links
+    isDeleted: boolean("is_deleted"),
 });
 
 export const contract = mysqlTable("contract", {
     id: int("id").primaryKey().autoincrement(),
     documentUrls: json("document_urls").notNull(), // json array of links
     description: varchar("description", { length: 255 }).notNull(),
+    isDeleted: boolean("is_deleted"),
 });
 
 export const tradeGroup = mysqlTable("trade_group", {
@@ -70,6 +74,7 @@ export const tradeGroup = mysqlTable("trade_group", {
         .references(() => user.id),
     contractId: int("contract_id").references(() => contract.id),
     status: varchar("status", { length: 255 }).notNull(),
+    isDeleted: boolean("is_deleted"),
 });
 
 export const tradeInventory = mysqlTable("trade_inventory", {
@@ -89,6 +94,7 @@ export const tradeInventory = mysqlTable("trade_inventory", {
     totalQuantity: int("total_quantity").notNull(),
     completedQuantity: int("completed_quantity").notNull(),
     isCompleted: boolean("is_completed").notNull(),
+    isDeleted: boolean("is_deleted"),
 });
 
 export const tradeTransaction = mysqlTable("trade_transaction", {
@@ -100,6 +106,7 @@ export const tradeTransaction = mysqlTable("trade_transaction", {
     proofUrls: json("proof_urls").notNull(), // json array of links
     quantity: int("quantity").notNull(),
     timestamp: timestamp("timestamp"),
+    isDeleted: boolean("is_deleted"),
 });
 
 export const chatRoom = mysqlTable("chat_room", {
@@ -122,6 +129,7 @@ export const chatMessage = mysqlTable("chat_message", {
         .references(() => user.id),
     content: varchar("content", { length: 255 }).notNull(),
     timestamp: timestamp("timestamp"),
+    isDeleted: boolean("is_deleted"),
 });
 
 export const notification = mysqlTable("notification", {
@@ -133,6 +141,7 @@ export const notification = mysqlTable("notification", {
     content: json("content").notNull(), // object with content, ids, or links depending on type
     timestamp: timestamp("timestamp").notNull(),
     isRead: boolean("is_read").notNull(),
+    isDeleted: boolean("is_deleted"),
 });
 
 // types
