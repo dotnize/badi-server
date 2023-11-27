@@ -26,5 +26,5 @@ app.use(routes); // router from routes.ts
 // start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-    console.log(`Badi API Server is running on port :${PORT}`);
+    console.log(`Badi API Server started on port :${PORT}`);
 });
