@@ -5,7 +5,6 @@ import { boolean, int, json, mysqlTable, timestamp, varchar } from "drizzle-orm/
 export const user = mysqlTable("user", {
     id: int("id").primaryKey().autoincrement(),
     email: varchar("email", { length: 255 }).notNull(),
-    password: varchar("password", { length: 255 }).notNull(),
     firstName: varchar("first_name", { length: 64 }).notNull(),
     lastName: varchar("last_name", { length: 64 }).notNull(),
     gender: varchar("gender", { length: 32 }).notNull(),
@@ -13,6 +12,14 @@ export const user = mysqlTable("user", {
     avatarUrl: varchar("avatar_url", { length: 255 }),
     location: varchar("location", { length: 255 }),
     isVerified: boolean("is_verified").notNull(),
+});
+
+export const userPassword = mysqlTable("user_password", {
+    id: int("id").primaryKey().autoincrement(),
+    userId: int("user_id")
+        .notNull()
+        .references(() => user.id),
+    password: varchar("password", { length: 255 }).notNull(),
 });
 
 export const inventory = mysqlTable("inventory", {
@@ -121,6 +128,7 @@ export const notification = mysqlTable("notification", {
 
 // types
 export type User = typeof user.$inferSelect;
+export type UserPassword = typeof userPassword.$inferSelect;
 export type Inventory = typeof inventory.$inferSelect;
 export type Wish = typeof wish.$inferSelect;
 export type Contract = typeof contract.$inferSelect;
