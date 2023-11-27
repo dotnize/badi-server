@@ -68,7 +68,9 @@ export const contract = mysqlTable("contract", {
 
 export const tradeGroup = mysqlTable("trade_group", {
     id: int("id").primaryKey().autoincrement(),
-    user1Id: int("user1_id").references(() => user.id),
+    user1Id: int("user1_id")
+        .notNull()
+        .references(() => user.id),
     user2Id: int("user2_id") // TEMPORARY, for one-to-one trade only
         .notNull()
         .references(() => user.id),
