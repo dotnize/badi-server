@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "tsx watch ./src/server.ts",
         "start": "tsx ./src/server.ts",
-        "db:push": "env-cmd -x drizzle-kit push:mysql --driver=mysql2 --schema=./src/db/schema.ts --user=\\$MYSQL_USER --password=\\$MYSQL_PASSWORD --host=\\$MYSQL_HOST --port=\\$MYSQL_PORT --database=\\$MYSQL_DATABASE"
+        "db:studio": "drizzle-kit studio",
+        "db:push": "drizzle-kit push:mysql"
     },
     "keywords": [],
     "author": "",
