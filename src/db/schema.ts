@@ -61,6 +61,9 @@ export const wish = mysqlTable("wish", {
 
 export const contract = mysqlTable("contract", {
     id: int("id").primaryKey().autoincrement(),
+    tradeGroupId: int("tradegroup_id")
+        .notNull()
+        .references(() => tradeGroup.id),
     documentUrls: json("document_urls").notNull(), // json array of links
     description: varchar("description", { length: 255 }).notNull(),
     isDeleted: boolean("is_deleted"),
@@ -74,7 +77,6 @@ export const tradeGroup = mysqlTable("trade_group", {
     user2Id: int("user2_id") // TEMPORARY, for one-to-one trade only
         .notNull()
         .references(() => user.id),
-    contractId: int("contract_id").references(() => contract.id),
     status: varchar("status", { length: 255 }).notNull(),
     isDeleted: boolean("is_deleted"),
 });
