@@ -38,6 +38,7 @@ export const inventory = mysqlTable("inventory", {
     type: varchar("type", { length: 255 }).notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     keywords: json("keywords").notNull(), // json array of strings
+    location: varchar("location", { length: 255 }),
     description: varchar("description", { length: 255 }).notNull(),
     imageUrls: json("image_urls").notNull(), // json array of links
     preferredOffer: varchar("preferred_offer", { length: 255 }),
@@ -130,7 +131,7 @@ export const notification = mysqlTable("notification", {
         .references(() => user.id),
     type: varchar("type", { length: 255 }).notNull(), // "matched", "completedTrade", "newOffer"
     content: json("content").notNull(), // object with content, ids, or links depending on type
-    timestamp: timestamp("timestamp"),
+    timestamp: timestamp("timestamp").notNull(),
     isRead: boolean("is_read").notNull(),
 });
 
