@@ -1,4 +1,12 @@
-import { boolean, int, json, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+    boolean,
+    int,
+    json,
+    mysqlTable,
+    timestamp,
+    tinyint,
+    varchar,
+} from "drizzle-orm/mysql-core";
 
 // TODO: most varchar lengths are unnecessarily 255. adjust to improve performance?
 
@@ -11,7 +19,7 @@ export const user = mysqlTable("user", {
     phoneNumber: varchar("phone_number", { length: 32 }),
     avatarUrl: varchar("avatar_url", { length: 255 }),
     location: varchar("location", { length: 255 }).notNull(),
-    isVerified: boolean("is_verified").notNull(),
+    verified: tinyint("verified").notNull(),
 });
 
 export const userPassword = mysqlTable("user_password", {
