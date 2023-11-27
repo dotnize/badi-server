@@ -10,6 +10,7 @@ const sessionStore = new MySQLStore({
     database: process.env.MYSQL_DATABASE,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
+    createDatabaseTable: true,
 });
 
 declare module "express-session" {
