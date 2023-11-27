@@ -105,7 +105,7 @@ export const tradeTransaction = mysqlTable("trade_transaction", {
     description: varchar("description", { length: 255 }),
     proofUrls: json("proof_urls").notNull(), // json array of links
     quantity: int("quantity").notNull(),
-    timestamp: timestamp("timestamp"),
+    timestamp: timestamp("timestamp").notNull(),
     isDeleted: boolean("is_deleted"),
 });
 
@@ -128,7 +128,7 @@ export const chatMessage = mysqlTable("chat_message", {
         .notNull()
         .references(() => user.id),
     content: varchar("content", { length: 255 }).notNull(),
-    timestamp: timestamp("timestamp"),
+    timestamp: timestamp("timestamp").notNull(),
     isDeleted: boolean("is_deleted"),
 });
 
