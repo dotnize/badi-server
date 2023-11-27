@@ -148,15 +148,17 @@ export const notification = mysqlTable("notification", {
     isDeleted: boolean("is_deleted"),
 });
 
+type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 // types
-export type User = typeof user.$inferSelect;
+export type User = MakeOptional<typeof user.$inferSelect, "isDeleted">;
 export type UserPassword = typeof userPassword.$inferSelect;
-export type Inventory = typeof inventory.$inferSelect;
-export type Wish = typeof wish.$inferSelect;
-export type Contract = typeof contract.$inferSelect;
-export type TradeGroup = typeof tradeGroup.$inferSelect;
-export type TradeInventory = typeof tradeInventory.$inferSelect;
-export type TradeTransaction = typeof tradeTransaction.$inferSelect;
+export type Inventory = MakeOptional<typeof inventory.$inferSelect, "isDeleted">;
+export type Wish = MakeOptional<typeof wish.$inferSelect, "isDeleted">;
+export type Contract = MakeOptional<typeof contract.$inferSelect, "isDeleted">;
+export type TradeGroup = MakeOptional<typeof tradeGroup.$inferSelect, "isDeleted">;
+export type TradeInventory = MakeOptional<typeof tradeInventory.$inferSelect, "isDeleted">;
+export type TradeTransaction = MakeOptional<typeof tradeTransaction.$inferSelect, "isDeleted">;
 export type ChatRoom = typeof chatRoom.$inferSelect;
-export type ChatMessage = typeof chatMessage.$inferSelect;
-export type Notification = typeof notification.$inferSelect;
+export type ChatMessage = MakeOptional<typeof chatMessage.$inferSelect, "isDeleted">;
+export type Notification = MakeOptional<typeof notification.$inferSelect, "isDeleted">;
