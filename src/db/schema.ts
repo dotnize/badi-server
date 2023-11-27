@@ -1,9 +1,9 @@
-import { bigint, boolean, int, json, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, int, json, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 // TODO: most varchar lengths are unnecessarily 255. adjust to improve performance?
 
 export const user = mysqlTable("user", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     firstName: varchar("first_name", { length: 64 }).notNull(),
     lastName: varchar("last_name", { length: 64 }).notNull(),
     gender: varchar("gender", { length: 32 }).notNull(),
@@ -15,7 +15,7 @@ export const user = mysqlTable("user", {
 });
 
 export const inventory = mysqlTable("inventory", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     userId: int("user_id")
         .notNull()
         .references(() => user.id),
@@ -28,7 +28,7 @@ export const inventory = mysqlTable("inventory", {
 });
 
 export const wish = mysqlTable("wish", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     userId: int("user_id")
         .notNull()
         .references(() => user.id),
@@ -40,13 +40,13 @@ export const wish = mysqlTable("wish", {
 });
 
 export const contract = mysqlTable("contract", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     documentUrls: json("document_urls").notNull(), // json array of links
     description: varchar("description", { length: 255 }).notNull(),
 });
 
 export const tradeGroup = mysqlTable("trade_group", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     user1Id: int("user1_id").references(() => user.id),
     user2Id: int("user2_id") // TEMPORARY, for one-to-one trade only
         .notNull()
@@ -56,7 +56,7 @@ export const tradeGroup = mysqlTable("trade_group", {
 });
 
 export const tradeInventory = mysqlTable("trade_inventory", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     tradeGroupId: int("tradegroup_id")
         .notNull()
         .references(() => tradeGroup.id),
@@ -75,7 +75,7 @@ export const tradeInventory = mysqlTable("trade_inventory", {
 });
 
 export const tradeTransaction = mysqlTable("trade_transaction", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     tradeInventoryId: int("tradeinventory_id")
         .notNull()
         .references(() => tradeInventory.id),
@@ -86,7 +86,7 @@ export const tradeTransaction = mysqlTable("trade_transaction", {
 });
 
 export const chatRoom = mysqlTable("chat_room", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     member1Id: int("member1_id")
         .notNull()
         .references(() => user.id),
@@ -96,7 +96,7 @@ export const chatRoom = mysqlTable("chat_room", {
 });
 
 export const chatMessage = mysqlTable("chat_message", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     chatRoomId: int("chatroom_id")
         .notNull()
         .references(() => chatRoom.id),
@@ -108,7 +108,7 @@ export const chatMessage = mysqlTable("chat_message", {
 });
 
 export const notification = mysqlTable("notification", {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: int("id").primaryKey().autoincrement(),
     userId: int("user_id")
         .notNull()
         .references(() => user.id),
