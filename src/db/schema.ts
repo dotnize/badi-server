@@ -103,6 +103,9 @@ export const tradeInventory = mysqlTable("trade_inventory", {
 
 export const tradeTransaction = mysqlTable("trade_transaction", {
     id: int("id").primaryKey().autoincrement(),
+    tradeGroupId: int("tradegroup_id")
+        .notNull()
+        .references(() => tradeGroup.id),
     tradeInventoryId: int("tradeinventory_id")
         .notNull()
         .references(() => tradeInventory.id),
