@@ -117,3 +117,15 @@ export const notification = mysqlTable("notification", {
     timestamp: timestamp("timestamp"),
     isRead: boolean("is_read").notNull(),
 });
+
+// types
+export type User = typeof user.$inferSelect;
+export type Inventory = typeof inventory.$inferSelect;
+export type Wish = typeof wish.$inferSelect;
+export type Contract = typeof contract.$inferSelect;
+export type TradeGroup = typeof tradeGroup.$inferSelect;
+export type TradeInventory = typeof tradeInventory.$inferSelect;
+export type TradeTransaction = typeof tradeTransaction.$inferSelect;
+export type ChatRoom = typeof chatRoom.$inferSelect;
+export type ChatMessage = typeof chatMessage.$inferSelect;
+export type Notification = typeof notification.$inferSelect;

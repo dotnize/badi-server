@@ -1,6 +1,7 @@
 import MysqlSession from "express-mysql-session";
 import * as session from "express-session";
 import { nanoid } from "nanoid";
+import type { User } from "~/db/schema";
 
 const MySQLStore = MysqlSession(session);
 const sessionStore = new MySQLStore({
@@ -11,21 +12,20 @@ const sessionStore = new MySQLStore({
     password: process.env.MYSQL_PASSWORD,
 });
 
-// TODO: use User type from drizzle
-// declare module "express-session" {
-//     // eslint-disable-next-line no-unused-vars
-//     interface SessionData {
-//         user: User;
-//     }
-// }
-// declare module "http" {
-//     // eslint-disable-next-line no-unused-vars
-//     interface IncomingMessage {
-//         session: Session & {
-//             user: User;
-//         };
-//     }
-// }
+declare module "express-session" {
+    // eslint-disable-next-line no-unused-vars
+    interface SessionData {
+        user: User;
+    }
+}
+declare module "http" {
+    // eslint-disable-next-line no-unused-vars
+    interface IncomingMessage {
+        session: session.Session & {
+            user: User;
+        };
+    }
+}
 
 export default session.default({
     store: sessionStore,
