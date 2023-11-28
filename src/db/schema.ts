@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
     boolean,
     float,
@@ -165,3 +166,58 @@ export const rating = mysqlTable("rating", {
     description: varchar("description", { length: 255 }),
     timestamp: timestamp("timestamp").notNull(),
 });
+
+export const chatRoomRelations = relations(chatRoom, ({ one }) => ({
+    // TODO: test properly. this will probably return the first message.
+    lastMessagePreview: one(chatMessage, {
+        fields: [chatRoom.id],
+        references: [chatMessage.chatRoomId],
+    }),
+    member1: one(user, {
+        fields: [chatRoom.member1Id],
+        references: [user.id],
+    }),
+    member2: one(user, {
+        fields: [chatRoom.member2Id],
+        references: [user.id],
+    }),
+}));
+
+export const inventoryRelations = relations(inventory, ({ one }) => ({
+    user: one(user, {
+        fields: [inventory.userId],
+        references: [user.id],
+    }),
+}));
+
+export const ratingRelations = relations(rating, ({ one }) => ({
+    fromUser: one(user, {
+        fields: [rating.fromUserId],
+        references: [user.id],
+    }),
+}));
+
+export const tradeGroupRelations = relations(tradeGroup, ({ one }) => ({
+    user1: one(user, {
+        fields: [tradeGroup.user1Id],
+        references: [user.id],
+    }),
+    user2: one(user, {
+        fields: [tradeGroup.user2Id],
+        references: [user.id],
+    }),
+}));
+
+export const tradeInventoryRelations = relations(tradeInventory, ({ one }) => ({
+    inventory: one(inventory, {
+        fields: [tradeInventory.inventoryId],
+        references: [inventory.id],
+    }),
+}));
+
+export const wishRelations = relations(wish, ({ one }) => ({
+    user: one(user, {
+        fields: [wish.userId],
+        references: [user.id],
+    }),
+}));
