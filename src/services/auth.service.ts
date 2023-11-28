@@ -113,7 +113,7 @@ export async function register(req: Request, res: Response) {
         // save to session and return user object
         req.session.user = newUser;
         req.session.save(() => {
-            res.status(200).json(req.session.user);
+            res.status(201).json(req.session.user);
         });
     } catch (err) {
         console.error(err);
