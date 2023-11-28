@@ -1,4 +1,8 @@
 import type { Request, Response } from "express";
+import { Expand, Rating, User } from "~/lib/types";
+
+// use this type below as response sa GET endpoints, for others use Rating type only
+type RatingGet = Expand<Rating & { fromUser: User }>;
 
 // GET /rating/user/:id   - req.params.id
 export async function getRatingByUserId(req: Request, res: Response) {

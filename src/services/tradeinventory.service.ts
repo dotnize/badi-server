@@ -1,6 +1,10 @@
 import type { Request, Response } from "express";
+import { Expand, Inventory, TradeInventory } from "~/lib/types";
 
 // for the GET endpoints, we should include the referenced Inventory object for the response
+
+// use this type below as response sa GET endpoints, for others use TradeInventory type only
+type TradeInventoryGet = Expand<TradeInventory & { inventory: Inventory }>;
 
 // GET /tradeinventory/:id   - req.params.id
 export async function getTradeInventoryById(req: Request, res: Response) {

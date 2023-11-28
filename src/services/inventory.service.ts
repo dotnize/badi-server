@@ -1,4 +1,10 @@
 import type { Request, Response } from "express";
+import { Expand, Inventory, User } from "~/lib/types";
+
+// for the GET endpoints, we should include the referenced User objects for the response (based on the frontend's types)
+
+// use this type below as response sa GET endpoints, for others use Inventory type only
+type InventoryGet = Expand<Inventory & { user: User }>;
 
 // GET /inventory
 export async function getAllInventory(req: Request, res: Response) {

@@ -1,4 +1,10 @@
 import type { Request, Response } from "express";
+import { Expand, User, Wish } from "~/lib/types";
+
+// for the GET endpoints, we should include the referenced User objects for the response (based on the frontend's types)
+
+// use this type below as response sa GET endpoints, for others use Wish type only
+type WishGet = Expand<Wish & { user: User }>;
 
 // GET /wish
 export async function getAllWish(req: Request, res: Response) {

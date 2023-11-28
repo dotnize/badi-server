@@ -1,7 +1,10 @@
 import type { Request, Response } from "express";
+import { ChatMessage, ChatRoom, Expand, User } from "~/lib/types";
 
-// suggestion for the GET endpoints response:
-// - include the latest "chatmessage" for the chatroom, para mapreview ang last message sa convo list UI
+// use this type below as response sa GET endpoints, for others use ChatRoom type only
+type ChatRoomGet = Expand<
+    ChatRoom & { lastMessagePreview: ChatMessage; member1: User; member2: User }
+>;
 
 // GET /chatroom/user/:id   - req.params.id
 export async function getChatRoomByUserId(req: Request, res: Response) {
