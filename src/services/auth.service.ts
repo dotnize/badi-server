@@ -3,7 +3,8 @@ import { eq } from "drizzle-orm";
 import type { Request, Response } from "express";
 
 import { db } from "~/db/drizzle";
-import { User, user, userPassword } from "~/db/schema";
+import { user, userPassword } from "~/db/schema";
+import type { User } from "~/lib/types";
 
 export async function getCurrentSession(req: Request, res: Response) {
     try {
@@ -94,6 +95,7 @@ export async function register(req: Request, res: Response) {
             gender: input.gender,
             location: input.location,
             verified: 0,
+            averageRating: null,
             phoneNumber: input.phoneNumber || null,
             avatarUrl: input.avatarUrl || null,
         };
