@@ -9,9 +9,7 @@ Table of Contents:
 
 ## Creating a new branch
 
-For general tasks, use your last name as the branch name. For specific & experimental changes, use a descriptive branch name following the format `lastname/branchname`.
-
--   e.g. `ursonal`, `sagmon/fix-cookies`, `tampus`, or `ursonal/auth`
+For general tasks, use your last name as the branch name.
 
 1. Switch to `main` branch:
     ```sh
