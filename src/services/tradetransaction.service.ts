@@ -10,6 +10,7 @@ export async function getTradeTransactionByGroupId(req: Request, res: Response) 
     }
 }
 
+// by inventory, i mean TradeInventory. gipamubo nalang kay taas ra kaayo
 // GET /tradetransaction/inventory/:id   - req.params.id
 export async function getTradeTransactionByInventoryId(req: Request, res: Response) {
     try {
