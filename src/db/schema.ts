@@ -1,5 +1,6 @@
 import {
     boolean,
+    float,
     int,
     json,
     mysqlTable,
@@ -20,6 +21,7 @@ export const user = mysqlTable("user", {
     avatarUrl: varchar("avatar_url", { length: 255 }),
     location: varchar("location", { length: 255 }).notNull(),
     verified: tinyint("verified").notNull(),
+    averageRating: float("average_rating"),
     isDeleted: boolean("is_deleted"),
 });
 
@@ -151,6 +153,19 @@ export const notification = mysqlTable("notification", {
     isDeleted: boolean("is_deleted"),
 });
 
+export const rating = mysqlTable("rating", {
+    id: int("id").primaryKey().autoincrement(),
+    fromUserId: int("user_id")
+        .notNull()
+        .references(() => user.id),
+    toUserId: int("user_id")
+        .notNull()
+        .references(() => user.id),
+    amount: int("rating").notNull(),
+    description: varchar("description", { length: 255 }),
+    timestamp: timestamp("timestamp").notNull(),
+});
+
 type Expand<T> = T extends unknown ? { [K in keyof T]: Expand<T[K]> } : never;
 type MakeOptional<T, K extends keyof T> = Expand<Omit<T, K> & Partial<Pick<T, K>>>;
 
@@ -166,3 +181,4 @@ export type TradeTransaction = MakeOptional<typeof tradeTransaction.$inferSelect
 export type ChatRoom = typeof chatRoom.$inferSelect;
 export type ChatMessage = MakeOptional<typeof chatMessage.$inferSelect, "isDeleted">;
 export type Notification = MakeOptional<typeof notification.$inferSelect, "isDeleted">;
+export type Rating = typeof rating.$inferSelect;
