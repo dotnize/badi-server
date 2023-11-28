@@ -13,7 +13,7 @@ import type {
     wish,
 } from "~/db/schema";
 
-type Expand<T> = T extends unknown ? { [K in keyof T]: T[K] } : never;
+export type Expand<T> = T extends unknown ? { [K in keyof T]: T[K] } : never;
 type MakeOptional<T, K extends keyof T> = Expand<Omit<T, K> & Partial<Pick<T, K>>>;
 
 // types
