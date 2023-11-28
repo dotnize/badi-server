@@ -12,6 +12,7 @@ type WishGet = Expand<Wish & { user: User }>;
 // GET /wish
 export async function getAllWish(req: Request, res: Response) {
     try {
+        // WishGet type so the referenced User object is included (for the frontend UI)
         const resultWishes: WishGet[] = await db.query.wish.findMany({ with: { user: true } });
         res.status(200).json(resultWishes);
     } catch (err) {
@@ -128,7 +129,7 @@ export async function updateWish(req: Request, res: Response) {
         // destructure the request json body
         const { name, type, keywords, description, imageUrls } = req.body;
 
-        // make sure all fields are present
+        // make sure all fields are present (can be same fields as POST)
         if (!name || !type || !keywords || !description || !imageUrls) {
             res.status(400).json({ error: true, message: "Missing fields." });
             return;
