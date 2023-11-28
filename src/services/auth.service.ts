@@ -24,6 +24,16 @@ export async function login(req: Request, res: Response) {
         const emailInput = req.body.email;
         const passwordInput = req.body.password;
 
+        if (req.session?.user?.id) {
+            res.status(409).json({ error: true, message: "Already logged in." });
+            return;
+        }
+
+        if (!emailInput || !passwordInput) {
+            res.status(400).json({ error: true, message: "Missing fields." });
+            return;
+        }
+
         // check if email exists
         const foundUser = await db.query.user.findFirst({
             where: eq(user.email, emailInput),
@@ -72,7 +82,7 @@ export async function register(req: Request, res: Response) {
             !input.gender ||
             !input.location
         ) {
-            res.status(400).json({ error: true, message: "Missing required fields." });
+            res.status(400).json({ error: true, message: "Missing fields." });
         }
 
         // check if email already exists
