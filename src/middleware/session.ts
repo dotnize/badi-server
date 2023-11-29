@@ -1,7 +1,7 @@
 import MysqlSession from "express-mysql-session";
 import * as session from "express-session";
 import { nanoid } from "nanoid";
-import type { User } from "~/db/schema";
+import type { User } from "~/lib/types";
 
 const MySQLStore = MysqlSession(session);
 const sessionStore = new MySQLStore({
