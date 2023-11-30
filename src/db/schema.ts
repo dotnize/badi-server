@@ -165,6 +165,7 @@ export const rating = mysqlTable("rating", {
     amount: int("rating").notNull(),
     description: varchar("description", { length: 255 }),
     timestamp: timestamp("timestamp").notNull(),
+    isDeleted: boolean("is_deleted"),
 });
 
 // Relations for the "with" parameter in drizzle-orm's findMany and findFirst
