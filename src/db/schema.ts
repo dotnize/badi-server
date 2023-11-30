@@ -89,10 +89,10 @@ export const tradeInventory = mysqlTable("trade_inventory", {
     tradeGroupId: int("tradegroup_id")
         .notNull()
         .references(() => tradeGroup.id),
-    senderId: int("user_id")
+    senderId: int("sender_id")
         .notNull()
         .references(() => user.id),
-    receiverId: int("user_id")
+    receiverId: int("receiver_id")
         .notNull()
         .references(() => user.id),
     inventoryId: int("inventory_id")
