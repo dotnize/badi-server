@@ -156,10 +156,10 @@ export const notification = mysqlTable("notification", {
 
 export const rating = mysqlTable("rating", {
     id: int("id").primaryKey().autoincrement(),
-    fromUserId: int("user_id")
+    fromUserId: int("fromuser_id")
         .notNull()
         .references(() => user.id),
-    toUserId: int("user_id")
+    toUserId: int("touser_id")
         .notNull()
         .references(() => user.id),
     amount: int("rating").notNull(),
