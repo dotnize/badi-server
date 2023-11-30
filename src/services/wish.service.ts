@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { db } from "~/db/drizzle";
 import { wish } from "~/db/schema";
@@ -14,7 +14,7 @@ export async function getAllWish(req: Request, res: Response) {
     try {
         // WishGet type so the referenced User object is included (for the frontend UI)
         const resultWishes: WishGet[] = await db.query.wish.findMany({
-            where: eq(wish.isDeleted, false),
+            where: isNull(wish.isDeleted),
             with: { user: true },
         });
         res.status(200).json(resultWishes);
@@ -38,7 +38,7 @@ export async function getWishByUserId(req: Request, res: Response) {
 
         // get wishes by user id
         const resultWishes: WishGet[] = await db.query.wish.findMany({
-            where: and(eq(wish.userId, userId), eq(wish.isDeleted, false)),
+            where: and(eq(wish.userId, userId), isNull(wish.isDeleted)),
             with: { user: true },
         });
 
@@ -64,7 +64,7 @@ export async function getWishById(req: Request, res: Response) {
 
         // get wish by id, and it's possibly nonexistent (undefined type)
         const wishResult: WishGet | undefined = await db.query.wish.findFirst({
-            where: and(eq(wish.id, id), eq(wish.isDeleted, false)),
+            where: and(eq(wish.id, id), isNull(wish.isDeleted)),
             with: { user: true },
         });
 
