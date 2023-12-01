@@ -32,6 +32,25 @@ export async function getNotificationByUserId(req: Request, res: Response) {
 export async function getNotificationById(req: Request, res: Response) {
     try {
         // TODO input validation from "req" object, business logic, then respond using "res" object
+        const notificationId = parseInt(req.params.id, 10); // Convert to number
+
+        // Example: Check if notificationId is provided and is a valid number
+        if (isNaN(notificationId)) {
+            res.status(400).json({ error: true, message: "Invalid Notification ID." });
+            return;
+        }
+
+        // Business logic: Retrieve a specific notification by ID
+        const foundNotification = await db.query.notification.findFirst({
+            where: eq(notification.id, notificationId),
+        });
+
+        if (!foundNotification) {
+            res.status(404).json({ error: true, message: "Notification not found." });
+            return;
+        }
+
+        res.status(200).json(foundNotification);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
