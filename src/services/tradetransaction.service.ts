@@ -8,8 +8,6 @@ import { TradeGroup, TradeTransaction } from "~/lib/types";
 // GET /tradetransaction/group/:id   - req.params.id
 export async function getTradeTransactionByGroupId(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid user ID." });
             return;
@@ -35,7 +33,6 @@ export async function getTradeTransactionByGroupId(req: Request, res: Response) 
 // GET /tradetransaction/inventory/:id   - req.params.id
 export async function getTradeTransactionByInventoryId(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid user ID." });
             return;
@@ -60,7 +57,6 @@ export async function getTradeTransactionByInventoryId(req: Request, res: Respon
 // GET /tradetransaction/:id   - req.params.id
 export async function getTradeTransactionById(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid user ID." });
             return;
@@ -91,8 +87,6 @@ export async function getTradeTransactionById(req: Request, res: Response) {
 // POST /tradetransaction  - req.body (json body sa request)
 export async function createTradeTransaction(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-
         const {
             tradeGroupId,
             tradeInventoryId,
@@ -100,7 +94,6 @@ export async function createTradeTransaction(req: Request, res: Response) {
             proofUrls,
             quantity,
             timestamp = new Date(),
-            isDeleted = false,
         } = req.body;
 
         // make sure all fields are present
@@ -108,10 +101,6 @@ export async function createTradeTransaction(req: Request, res: Response) {
             res.status(400).json({ error: true, message: "Missing fields." });
             return;
         }
-
-        //const userId = req.session.userId;
-        // TODO: temporary, no auth/sessions for now para dali itest
-        const userId = 1;
 
         // insert to db
         const insertResult = await db.insert(tradeTransaction).values({
@@ -121,7 +110,6 @@ export async function createTradeTransaction(req: Request, res: Response) {
             proofUrls,
             quantity,
             timestamp,
-            isDeleted,
         });
 
         // get new id of inserted row
@@ -149,21 +137,14 @@ export async function createTradeTransaction(req: Request, res: Response) {
 // PUT /tradetransaction/:id   - req.params.id and req.body
 export async function updateTradeTransaction(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - 1 check if tradeTransaction exists using id
-        // - 2 check if current session user is part of transaction's referenced tradeGroup
-        // - 3 then update, req.body should contain the new values for the update query
-
         // 1
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
-            res.status(400).json({ error: true, message: "Invalid user ID." });
+            res.status(400).json({ error: true, message: "Invalid transaction ID." });
             return;
         }
 
         // convert id param to number after validating
         const id = parseInt(req.params.id);
-        console.log(id, "yjh");
 
         // get tradetransaction by id, and it's possibly nonexistent (undefined type)
         const currentTradeTransaction: TradeTransaction | undefined =
@@ -243,12 +224,6 @@ export async function updateTradeTransaction(req: Request, res: Response) {
 // DELETE /tradetransaction/:id    - req.params.id
 export async function deleteTradeTransaction(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - 1 check if tradeTransaction exists using id
-        // - 2 check if current session user is part of transaction's referenced tradeGroup
-        // - 3 then update is deleted
-
         // 1
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid user ID." });
@@ -271,13 +246,12 @@ export async function deleteTradeTransaction(req: Request, res: Response) {
         }
 
         // 2
-        const currentTradeTransactionGroup: TradeGroup | undefined =
-            await db.query.tradeGroup.findFirst({
-                where: eq(tradeGroup.user1Id || tradeGroup.user2Id, req.session.userId),
-            });
+        const currentTradeGroup: TradeGroup | undefined = await db.query.tradeGroup.findFirst({
+            where: eq(tradeGroup.user1Id || tradeGroup.user2Id, req.session.userId),
+        });
 
         // if user is undefined
-        if (!currentTradeTransaction) {
+        if (!currentTradeGroup) {
             res.status(404).json({
                 error: true,
                 message: "You are not part of this Trade Transaction!",

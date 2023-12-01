@@ -10,10 +10,9 @@ type RatingGet = Expand<Rating & { fromUser: User }>;
 // GET /rating/user/:id   - req.params.id
 export async function getRatingByUserId(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
         const userId = req.params.id;
 
-        if(!userId || isNaN(parseInt(userId))){
+        if (!userId || isNaN(parseInt(userId))) {
             res.status(400).json({ error: true, message: "Invalid user ID." });
             return;
         }
@@ -24,7 +23,6 @@ export async function getRatingByUserId(req: Request, res: Response) {
         });
 
         res.status(200).json(resultRatings);
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
@@ -34,24 +32,23 @@ export async function getRatingByUserId(req: Request, res: Response) {
 // GET /rating/:id   - req.params.id
 export async function getRatingById(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-            const ratingId = req.params.id;
+        const ratingId = req.params.id;
 
-            if (!ratingId || isNaN(parseInt(ratingId))) {
-                res.status(400).json({ error: true, message: "Invalid rating ID." });
-                return;
-            }
+        if (!ratingId || isNaN(parseInt(ratingId))) {
+            res.status(400).json({ error: true, message: "Invalid rating ID." });
+            return;
+        }
 
-            const resultRating: RatingGet | undefined = await db.query.rating.findFirst({
-                where: eq(rating.id, parseInt(ratingId)),
-                with: { fromUser: true },
-            });
+        const resultRating: RatingGet | undefined = await db.query.rating.findFirst({
+            where: eq(rating.id, parseInt(ratingId)),
+            with: { fromUser: true },
+        });
 
-            if (resultRating) {
-                res.status(200).json(resultRating);
-            } else {
-                res.status(404).json({ error: true, message: "Rating not found." });
-            }
+        if (resultRating) {
+            res.status(200).json(resultRating);
+        } else {
+            res.status(404).json({ error: true, message: "Rating not found." });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
@@ -68,7 +65,7 @@ export async function createRating(req: Request, res: Response) {
             return;
         }
 
-        const fromUserId = 1; 
+        const fromUserId = req.session.userId;
 
         const insertResult = await db.insert(rating).values({
             toUserId,
@@ -101,53 +98,48 @@ export async function createRating(req: Request, res: Response) {
 // PUT /rating/:id   - req.params.id and req.body
 export async function updateRating(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if rating exists using id
-        // - check if current session user created the rating (rating.fromUserId)
-        // then req.body should contain the new values for the update query
-            const ratingId = req.params.id;
+        const ratingId = req.params.id;
 
-            if (!ratingId || isNaN(parseInt(ratingId))) {
-                res.status(400).json({ error: true, message: "Invalid rating ID." });
-                return;
-            }
+        if (!ratingId || isNaN(parseInt(ratingId))) {
+            res.status(400).json({ error: true, message: "Invalid rating ID." });
+            return;
+        }
 
-            const { amount, description } = req.body;
+        const { amount, description } = req.body;
 
-            if (!amount) {
-                res.status(400).json({ error: true, message: "amount is required." });
-                return;
-            }
+        if (!amount) {
+            res.status(400).json({ error: true, message: "amount is required." });
+            return;
+        }
 
-            const fromUserId = 1;
+        const fromUserId = req.session.userId;
 
-            const currentRating: Rating | undefined = await db.query.rating.findFirst({
-                where: eq(rating.id, parseInt(ratingId)),
-            });
+        const currentRating: Rating | undefined = await db.query.rating.findFirst({
+            where: eq(rating.id, parseInt(ratingId)),
+        });
 
-            if (!currentRating) {
-                res.status(404).json({ error: true, message: "Rating does not exist." });
-                return;
-            }
+        if (!currentRating) {
+            res.status(404).json({ error: true, message: "Rating does not exist." });
+            return;
+        }
 
-            if (currentRating.fromUserId !== fromUserId) {
-                res.status(403).json({ error: true, message: "You do not own this rating." });
-                return;
-            }
+        if (currentRating.fromUserId !== fromUserId) {
+            res.status(403).json({ error: true, message: "You do not own this rating." });
+            return;
+        }
 
-            await db
-                .update(rating)
-                .set({ amount, description })
-                .where(eq(rating.id, parseInt(ratingId)));
+        await db
+            .update(rating)
+            .set({ amount, description })
+            .where(eq(rating.id, parseInt(ratingId)));
 
-            const updatedRating: Rating = {
-                ...currentRating,
-                amount,
-                description,
-            };
+        const updatedRating: Rating = {
+            ...currentRating,
+            amount,
+            description,
+        };
 
-            res.status(200).json(updatedRating);
+        res.status(200).json(updatedRating);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
@@ -157,10 +149,6 @@ export async function updateRating(req: Request, res: Response) {
 // DELETE /rating/:id    - req.params.id
 export async function deleteRating(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if rating exists using id
-        // - check if current session user created the rating (rating.fromUserId)
         const ratingId = req.params.id;
 
         if (!ratingId || isNaN(parseInt(ratingId))) {
@@ -168,7 +156,7 @@ export async function deleteRating(req: Request, res: Response) {
             return;
         }
 
-        const fromUserId = 1;
+        const fromUserId = req.session.userId;
 
         const currentRating: RatingGet | undefined = await db.query.rating.findFirst({
             where: eq(rating.id, parseInt(ratingId)),
@@ -185,7 +173,11 @@ export async function deleteRating(req: Request, res: Response) {
             return;
         }
 
-        await db.delete(rating).where(eq(rating.id, parseInt(ratingId)));
+        //await db.delete(rating).where(eq(rating.id, parseInt(ratingId)));
+        await db
+            .update(rating)
+            .set({ isDeleted: true })
+            .where(eq(rating.id, parseInt(ratingId)));
 
         res.status(204).send();
     } catch (err) {

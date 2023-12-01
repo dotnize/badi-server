@@ -9,8 +9,6 @@ import { User } from "~/lib/types";
 // GET /user/:id   - req.params.id
 export async function getUserById(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid user ID." });
             return;
@@ -37,11 +35,6 @@ export async function getUserById(req: Request, res: Response) {
 // PUT /user/:id   - req.params.id and req.body
 export async function updateUser(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if user exists using id
-        // - check if current session user id is equal to this user id
-        // then req.body should contain the new values for the update query
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid wish ID." });
             return;
@@ -65,7 +58,7 @@ export async function updateUser(req: Request, res: Response) {
             return;
         }
 
-        const userId = 1;
+        const userId = req.session.userId;
 
         const currentUser: User | undefined = await db.query.user.findFirst({
             where: eq(user.id, id),
@@ -77,7 +70,7 @@ export async function updateUser(req: Request, res: Response) {
         }
 
         if (currentUser.id !== userId) {
-            res.status(403).json({ error: true, message: "You do not own this user." });
+            res.status(403).json({ error: true, message: "You are not this user." });
             return;
         }
         await db
@@ -114,10 +107,6 @@ export async function updateUser(req: Request, res: Response) {
 // DELETE /user/:id    - req.params.id
 export async function deleteUser(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if user exists using id
-        // - check if current session user id is equal to this user id
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid wish ID." });
             return;
@@ -126,8 +115,7 @@ export async function deleteUser(req: Request, res: Response) {
         // convert id param to number after validating
         const id = parseInt(req.params.id);
 
-        //temporary for comparing to current user session id to their id
-        const userId = 1;
+        const userId = req.session.userId;
 
         const currentUser: User | undefined = await db.query.user.findFirst({
             where: eq(user.id, id),
@@ -138,7 +126,7 @@ export async function deleteUser(req: Request, res: Response) {
             return;
         }
         if (currentUser.id !== userId) {
-            res.status(403).json({ error: true, message: "You do not own this user." });
+            res.status(403).json({ error: true, message: "You are not this user." });
             return;
         }
         await db.update(user).set({ isDeleted: true }).where(eq(user.id, userId));

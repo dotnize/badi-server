@@ -12,7 +12,6 @@ type InventoryGet = Expand<Inventory & { user: User }>;
 // GET /inventory
 export async function getAllInventory(req: Request, res: Response) {
     try {
-        // TODO business logic, then respond using "res" object
         const resultInventory: InventoryGet[] = await db.query.inventory.findMany({
             with: { user: true },
         });
@@ -39,7 +38,6 @@ export async function getInventoryByUserId(req: Request, res: Response) {
         });
 
         res.status(200).json(resultInventory);
-        // TODO input validation from "req" object, business logic, then respond using "res" object
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
@@ -62,7 +60,6 @@ export async function getInventoryById(req: Request, res: Response) {
         });
 
         res.status(200).json(resultInventory);
-        // TODO input validation from "req" object, business logic, then respond using "res" object
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
@@ -86,7 +83,7 @@ export async function createInventory(req: Request, res: Response) {
             res.status(400).json({ error: true, message: "Missing fields." });
             return;
         }
-        const userId = 1;
+        const userId = req.session.userId;
 
         const insertResult = await db.insert(inventory).values({
             name,
@@ -113,7 +110,6 @@ export async function createInventory(req: Request, res: Response) {
             userId,
         };
         res.status(201).json(newInventory);
-        // TODO input validation from "req" object, business logic, then respond using "res" object
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
@@ -123,12 +119,6 @@ export async function createInventory(req: Request, res: Response) {
 // PUT /inventory/:id   - req.params.id and req.body
 export async function updateInventory(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if inventory exists using id
-        // - check if current session user owns the inventory (compare req.session.userId and inventory.userId)
-        // then req.body should contain the new values for the update query
-        // make sure id param is a valid number
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
             res.status(400).json({ error: true, message: "Invalid inventory ID." });
             return;
@@ -154,9 +144,7 @@ export async function updateInventory(req: Request, res: Response) {
             return;
         }
 
-        //const userId = req.session.userId;
-        // TODO: temporary, no auth/sessions for now para dali itest
-        const userId = 1;
+        const userId = req.session.userId;
 
         // find the wish to update
         const currentInventory: Inventory | undefined = await db.query.inventory.findFirst({
@@ -209,7 +197,7 @@ export async function deleteInventory(req: Request, res: Response) {
 
         const id = parseInt(req.params.id);
 
-        const userId = 1;
+        const userId = req.session.userId;
 
         //find the inventory to delete
         const currentInventory: InventoryGet | undefined = await db.query.inventory.findFirst({
@@ -232,10 +220,6 @@ export async function deleteInventory(req: Request, res: Response) {
         await db.update(inventory).set({ isDeleted: true }).where(eq(inventory.id, userId));
 
         res.status(200).json(currentInventory);
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if inventory exists using id
-        // - check if current session user owns the inventory (compare req.session.userId and inventory.userId)
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });

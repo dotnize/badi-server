@@ -90,8 +90,7 @@ export async function createTradeGroup(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.userId; // TODO
-        const sessionUserId = 1;
+        const sessionUserId = req.session.userId;
         const user1Id = parseInt(req.body.user1Id);
         const user2Id = parseInt(req.body.user2Id);
 
@@ -177,9 +176,7 @@ export async function updateTradeGroup(req: Request, res: Response) {
             return;
         }
 
-        // check if current session user is part of trade group
-        //const sessionUserId = req.session.userId; // TODO
-        const sessionUserId = 1;
+        const sessionUserId = req.session.userId;
         if (
             sessionUserId !== currentTradeGroup.user1Id &&
             sessionUserId !== currentTradeGroup.user2Id
@@ -209,8 +206,7 @@ export async function deleteTradeGroup(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.userId; // TODO
-        const sessionUserId = 1;
+        const sessionUserId = req.session.userId;
 
         // check if trade group exists
         const currentTradeGroup: TradeGroup | undefined = await db.query.tradeGroup.findFirst({

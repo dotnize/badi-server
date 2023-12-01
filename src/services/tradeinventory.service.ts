@@ -91,8 +91,7 @@ export async function createTradeInventory(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.userId; // TODO
-        const sessionUserId = 1;
+        const sessionUserId = req.session.userId;
 
         // check if trade group exists
         const groupResult = await db.query.tradeGroup.findFirst({
@@ -153,13 +152,6 @@ export async function createTradeInventory(req: Request, res: Response) {
 // PUT /tradeinventory/:id   - req.params.id and req.body
 export async function updateTradeInventory(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if tradeInventory exists using id
-        // - check if current session user is part of tradeInventory (sender/receiver)
-        // then req.body should contain the new values for the update query
-        // update completedQuantity only, and isCompleted if necessary
-
         const { incrementQuantity } = req.body;
         const id = parseInt(req.params.id);
 
@@ -172,8 +164,7 @@ export async function updateTradeInventory(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.userId; // TODO
-        const sessionUserId = 1;
+        const sessionUserId = req.session.userId;
 
         // check if trade inventory exists
         const currentTradeInventory: TradeInventory | undefined =
@@ -223,8 +214,7 @@ export async function deleteTradeInventory(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.userId; // TODO
-        const sessionUserId = 1;
+        const sessionUserId = req.session.userId;
 
         // check if trade inventory exists
         const currentTradeInventory: TradeInventory | undefined =
@@ -251,7 +241,6 @@ export async function deleteTradeInventory(req: Request, res: Response) {
 
         // goodbye philippines
         //await db.delete(tradeInventory).where(eq(tradeInventory.id, id));
-        // TODO
 
         await db.update(tradeInventory).set({ isDeleted: true }).where(eq(tradeInventory.id, id));
 

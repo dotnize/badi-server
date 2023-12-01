@@ -94,9 +94,7 @@ export async function createWish(req: Request, res: Response) {
             return;
         }
 
-        //const userId = req.session.userId;
-        // TODO: temporary, no auth/sessions for now para dali itest
-        const userId = 1;
+        const userId = req.session.userId;
 
         // insert to db
         const insertResult = await db
@@ -138,9 +136,7 @@ export async function updateWish(req: Request, res: Response) {
             return;
         }
 
-        //const userId = req.session.userId;
-        // TODO: temporary, no auth/sessions for now para dali itest
-        const userId = 1;
+        const userId = req.session.userId;
 
         // find the wish to update
         const currentWish: Wish | undefined = await db.query.wish.findFirst({
@@ -188,9 +184,7 @@ export async function deleteWish(req: Request, res: Response) {
         // convert id param to number after validating
         const id = parseInt(req.params.id);
 
-        //const userId = req.session.userId;
-        // TODO: temporary, no auth/sessions for now para dali itest
-        const userId = 1;
+        const userId = req.session.userId;
 
         // find the wish to delete
         const currentWish: Wish | undefined = await db.query.wish.findFirst({
@@ -211,7 +205,7 @@ export async function deleteWish(req: Request, res: Response) {
 
         // goodbye philippines
         //await db.delete(wish).where(eq(wish.id, id));
-        // TODO after appdev
+
         await db.update(wish).set({ isDeleted: true }).where(eq(wish.id, id));
 
         // respond with the deleted wish object
