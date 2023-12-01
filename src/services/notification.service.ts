@@ -95,6 +95,18 @@ export async function deleteNotification(req: Request, res: Response) {
         // validation examples:
         // - check if notification exists using id
         // - check if current session user owns the notification (compare req.session.userId and notification.userId)
+        const notificationId = parseInt(req.params.id, 10); // Convert to number
+
+        // Example: Check if notificationId is provided and is a valid number
+        if (isNaN(notificationId)) {
+            res.status(400).json({ error: true, message: "Invalid Notification ID." });
+            return;
+        }
+
+        // Business logic: Delete the notification with the specified ID
+        await db.delete(notification).where(eq(notification.id, notificationId));
+
+        res.status(204).end();
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
