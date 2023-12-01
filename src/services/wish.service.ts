@@ -175,6 +175,7 @@ export async function updateWish(req: Request, res: Response) {
 
 // DELETE /wish/:id    - req.params.id
 export async function deleteWish(req: Request, res: Response) {
+    console.log("invaded");
     try {
         // make sure id param is a valid number
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
