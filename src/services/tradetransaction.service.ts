@@ -109,7 +109,7 @@ export async function createTradeTransaction(req: Request, res: Response) {
             return;
         }
 
-        //const userId = req.session.user.id;
+        //const userId = req.session.userId;
         // TODO: temporary, no auth/sessions for now para dali itest
         const userId = 1;
 
@@ -180,7 +180,7 @@ export async function updateTradeTransaction(req: Request, res: Response) {
         // 2
         // const currentTradeTransactionGroup: TradeGroup | undefined =
         //     await db.query.tradeGroup.findFirst({
-        //         where: eq(tradeGroup.user1Id || tradeGroup.user2Id, req.session.user.id),
+        //         where: eq(tradeGroup.user1Id || tradeGroup.user2Id, req.session.userId),
         //     });
 
         // // if user is undefined
@@ -273,7 +273,7 @@ export async function deleteTradeTransaction(req: Request, res: Response) {
         // 2
         const currentTradeTransactionGroup: TradeGroup | undefined =
             await db.query.tradeGroup.findFirst({
-                where: eq(tradeGroup.user1Id || tradeGroup.user2Id, req.session.user.id),
+                where: eq(tradeGroup.user1Id || tradeGroup.user2Id, req.session.userId),
             });
 
         // if user is undefined

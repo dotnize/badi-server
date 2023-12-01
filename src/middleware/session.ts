@@ -1,7 +1,6 @@
 import MysqlSession from "express-mysql-session";
 import * as session from "express-session";
 import { nanoid } from "nanoid";
-import type { User } from "~/lib/types";
 
 const MySQLStore = MysqlSession(session);
 const sessionStore = new MySQLStore({
@@ -15,13 +14,13 @@ const sessionStore = new MySQLStore({
 
 declare module "express-session" {
     interface SessionData {
-        user: User;
+        userId: number;
     }
 }
 declare module "http" {
     interface IncomingMessage {
         session: session.Session & {
-            user: User;
+            userId: number;
         };
     }
 }

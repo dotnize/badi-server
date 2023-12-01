@@ -91,7 +91,7 @@ export async function createTradeInventory(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.user.id; // TODO
+        //const sessionUserId = req.session.userId; // TODO
         const sessionUserId = 1;
 
         // check if trade group exists
@@ -172,7 +172,7 @@ export async function updateTradeInventory(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.user.id; // TODO
+        //const sessionUserId = req.session.userId; // TODO
         const sessionUserId = 1;
 
         // check if trade inventory exists
@@ -223,7 +223,7 @@ export async function deleteTradeInventory(req: Request, res: Response) {
             return;
         }
 
-        //const sessionUserId = req.session.user.id; // TODO
+        //const sessionUserId = req.session.userId; // TODO
         const sessionUserId = 1;
 
         // check if trade inventory exists

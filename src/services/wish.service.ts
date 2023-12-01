@@ -94,7 +94,7 @@ export async function createWish(req: Request, res: Response) {
             return;
         }
 
-        //const userId = req.session.user.id;
+        //const userId = req.session.userId;
         // TODO: temporary, no auth/sessions for now para dali itest
         const userId = 1;
 
@@ -138,7 +138,7 @@ export async function updateWish(req: Request, res: Response) {
             return;
         }
 
-        //const userId = req.session.user.id;
+        //const userId = req.session.userId;
         // TODO: temporary, no auth/sessions for now para dali itest
         const userId = 1;
 
@@ -188,7 +188,7 @@ export async function deleteWish(req: Request, res: Response) {
         // convert id param to number after validating
         const id = parseInt(req.params.id);
 
-        //const userId = req.session.user.id;
+        //const userId = req.session.userId;
         // TODO: temporary, no auth/sessions for now para dali itest
         const userId = 1;
 

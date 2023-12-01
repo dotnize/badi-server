@@ -126,7 +126,7 @@ export async function updateInventory(req: Request, res: Response) {
         // TODO input validation from "req" object, business logic, then respond using "res" object
         // validation examples:
         // - check if inventory exists using id
-        // - check if current session user owns the inventory (compare req.session.user.id and inventory.userId)
+        // - check if current session user owns the inventory (compare req.session.userId and inventory.userId)
         // then req.body should contain the new values for the update query
         // make sure id param is a valid number
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
@@ -154,7 +154,7 @@ export async function updateInventory(req: Request, res: Response) {
             return;
         }
 
-        //const userId = req.session.user.id;
+        //const userId = req.session.userId;
         // TODO: temporary, no auth/sessions for now para dali itest
         const userId = 1;
 
@@ -235,7 +235,7 @@ export async function deleteInventory(req: Request, res: Response) {
         // TODO input validation from "req" object, business logic, then respond using "res" object
         // validation examples:
         // - check if inventory exists using id
-        // - check if current session user owns the inventory (compare req.session.user.id and inventory.userId)
+        // - check if current session user owns the inventory (compare req.session.userId and inventory.userId)
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });

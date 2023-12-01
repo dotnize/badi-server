@@ -26,7 +26,7 @@ export async function updateNotification(req: Request, res: Response) {
         // TODO input validation from "req" object, business logic, then respond using "res" object
         // validation examples:
         // - check if notification exists using id
-        // - check if current session user owns the notification (compare req.session.user.id and notification.userId)
+        // - check if current session user owns the notification (compare req.session.userId and notification.userId)
         // then req.body should contain the new values for the update query
     } catch (err) {
         console.error(err);
@@ -40,7 +40,7 @@ export async function deleteNotification(req: Request, res: Response) {
         // TODO input validation from "req" object, business logic, then respond using "res" object
         // validation examples:
         // - check if notification exists using id
-        // - check if current session user owns the notification (compare req.session.user.id and notification.userId)
+        // - check if current session user owns the notification (compare req.session.userId and notification.userId)
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });

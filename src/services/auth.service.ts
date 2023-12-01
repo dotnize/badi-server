@@ -8,10 +8,17 @@ import type { User } from "~/lib/types";
 
 export async function getCurrentSession(req: Request, res: Response) {
     try {
-        if (req.session.user) {
-            res.status(200).json(req.session.user);
+        if (req.session.userId) {
+            const foundUser = await db.query.user.findFirst({
+                where: eq(user.id, req.session.userId),
+            });
+            if (!foundUser) {
+                res.status(404).json({ error: true, message: "No user found with your id." });
+                return;
+            }
+            res.status(200).json(foundUser);
         } else {
-            res.status(204).json({ error: true, message: "No session found." });
+            res.status(204).end();
         }
     } catch (err) {
         console.error(err);
@@ -24,7 +31,7 @@ export async function login(req: Request, res: Response) {
         const emailInput = req.body.email;
         const passwordInput = req.body.password;
 
-        if (req.session?.user?.id) {
+        if (req.session?.userId) {
             res.status(409).json({ error: true, message: "Already logged in." });
             return;
         }
@@ -59,9 +66,9 @@ export async function login(req: Request, res: Response) {
             return;
         }
 
-        req.session.user = foundUser;
+        req.session.userId = foundUser.id;
         req.session.save(() => {
-            res.status(200).json(req.session.user);
+            res.status(200).json(foundUser);
         });
     } catch (err) {
         console.error(err);
@@ -121,9 +128,9 @@ export async function register(req: Request, res: Response) {
         const newUser: User = { id: insertResult[0].insertId, ...inputUser };
 
         // save to session and return user object
-        req.session.user = newUser;
+        req.session.userId = newUser.id;
         req.session.save(() => {
-            res.status(201).json(req.session.user);
+            res.status(201).json(newUser);
         });
     } catch (err) {
         console.error(err);
