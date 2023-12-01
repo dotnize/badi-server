@@ -1,1 +1,4 @@
-export const corsConfig = { origin: "*", credentials: true };
+export const corsConfig = {
+    origin: "http://localhost:8081",
+    credentials: true,
+};
