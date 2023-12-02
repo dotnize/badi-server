@@ -36,7 +36,7 @@ export default session.default({
         maxAge: 120 * 24 * 60 * 60 * 1000, // 90 days
         secure: process.env.NODE_ENV === "production" ? true : false,
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "lax",
     },
     genid: function () {
         return nanoid(21);
