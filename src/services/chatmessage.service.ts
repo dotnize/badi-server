@@ -19,7 +19,7 @@ export async function getChatMessageByRoomId(req: Request, res: Response) {
                 where: and(eq(chatMessage.chatRoomId, parseInt(id)), isNull(chatMessage.isDeleted)),
             });
 
-        res.status(200).json({ roomMessages });
+        res.status(200).json( roomMessages );
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
