@@ -10,4 +10,4 @@ export const pool = createPool({
     password: process.env.MYSQL_PASSWORD,
 });
 
-export const db = drizzle(pool, { schema, mode: "default", logger: true });
+export const db = drizzle(pool, { schema, mode: "default" });
