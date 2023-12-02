@@ -170,11 +170,8 @@ export const rating = mysqlTable("rating", {
 
 // Relations for the "with" parameter in drizzle-orm's findMany and findFirst
 
-export const chatRoomRelations = relations(chatRoom, ({ one }) => ({
-    lastMessagePreview: one(chatMessage, {
-        fields: [chatRoom.id],
-        references: [chatMessage.chatRoomId],
-    }),
+export const chatRoomRelations = relations(chatRoom, ({ one, many }) => ({
+    lastMessagePreview: many(chatMessage),
     member1: one(user, {
         fields: [chatRoom.member1Id],
         references: [user.id],

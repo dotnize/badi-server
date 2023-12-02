@@ -6,7 +6,7 @@ import { ChatMessage, ChatRoom, Expand, User } from "~/lib/types";
 
 // use this type below as response sa GET endpoints, for others use ChatRoom type only
 type ChatRoomGet = Expand<
-    ChatRoom & { lastMessagePreview: ChatMessage; member1: User; member2: User }
+    ChatRoom & { lastMessagePreview: ChatMessage[]; member1: User; member2: User }
 >;
 
 // GET /chatroom/user/:id   - req.params.id
@@ -22,7 +22,15 @@ export async function getChatRoomByUserId(req: Request, res: Response) {
 
         const resultChatRoom: ChatRoomGet[] = await db.query.chatRoom.findMany({
             where: or(eq(chatRoom.member1Id, userId), eq(chatRoom.member2Id, userId)),
-            with: { lastMessagePreview: true, member1: true, member2: true },
+            with: {
+                lastMessagePreview: {
+                    orderBy: (chatMessage, { desc }) => [desc(chatMessage.id)],
+                    where: (chatMessage, { eq }) => eq(chatMessage.id, chatRoom.id),
+                    limit: 1,
+                },
+                member1: true,
+                member2: true,
+            },
         });
 
         res.status(200).json(resultChatRoom);
@@ -44,7 +52,15 @@ export async function getChatRoomById(req: Request, res: Response) {
 
         const chatRoomResult: ChatRoomGet | undefined = await db.query.chatRoom.findFirst({
             where: eq(chatRoom.id, id),
-            with: { lastMessagePreview: true, member1: true, member2: true },
+            with: {
+                lastMessagePreview: {
+                    orderBy: (chatMessage, { desc }) => [desc(chatMessage.id)],
+                    where: (chatMessage, { eq }) => eq(chatMessage.id, chatRoom.id),
+                    limit: 1,
+                },
+                member1: true,
+                member2: true,
+            },
         });
 
         if (!chatRoomResult) {
