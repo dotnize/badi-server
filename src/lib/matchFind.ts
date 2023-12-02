@@ -52,14 +52,14 @@ export async function findMatch(
             type: "match",
             timestamp: new Date(),
             isRead: false,
-            content: { matchedUserId: match.userId, toReceiveIds: [match.id], toGiveIds: [id] },
+            content: { matchedUserId: match.userId, toReceiveIds: [match.id], toSendIds: [id] },
         });
         db.insert(notification).values({
             userId: match.userId,
             type: "match",
             timestamp: new Date(),
             isRead: false,
-            content: { matchedUserId: fromUserId, toReceiveIds: [id], toGiveIds: [match.id] },
+            content: { matchedUserId: fromUserId, toReceiveIds: [id], toSendIds: [match.id] },
         });
     } catch (err) {
         console.error(err);
