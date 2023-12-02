@@ -182,6 +182,13 @@ export const chatRoomRelations = relations(chatRoom, ({ one, many }) => ({
     }),
 }));
 
+export const chatMessageRelations = relations(chatMessage, ({ one }) => ({
+    chatRoom: one(chatRoom, {
+        fields: [chatMessage.chatRoomId],
+        references: [chatRoom.id],
+    }),
+}));
+
 export const inventoryRelations = relations(inventory, ({ one }) => ({
     user: one(user, {
         fields: [inventory.userId],
