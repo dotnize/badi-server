@@ -73,12 +73,18 @@ export async function createChatRoom(req: Request, res: Response) {
             return;
         }
 
-        const newChatRoom = await db.insert(chatRoom).values({
+        const insertResult = await db.insert(chatRoom).values({
             member1Id: parseInt(member1Id),
             member2Id: parseInt(member2Id),
         });
 
-        res.status(201).json(newChatRoom[0]);
+        const newChatRoom: ChatRoom = {
+            id: insertResult[0].insertId,
+            member1Id: parseInt(member1Id),
+            member2Id: parseInt(member2Id),
+        };
+
+        res.status(201).json(newChatRoom);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: true, message: "Internal server error." });
