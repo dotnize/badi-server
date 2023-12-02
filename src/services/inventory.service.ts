@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { db } from "~/db/drizzle";
 import { inventory } from "~/db/schema";
+import { findMatch } from "~/lib/matchFind";
 import { Expand, Inventory, User } from "~/lib/types";
 
 // for the GET endpoints, we should include the referenced User objects for the response (based on the frontend's types)
@@ -109,6 +110,10 @@ export async function createInventory(req: Request, res: Response) {
             preferredOffer,
             userId,
         };
+
+        // find match
+        findMatch(id, userId, keywords, preferredOffer);
+
         res.status(201).json(newInventory);
     } catch (err) {
         console.error(err);
