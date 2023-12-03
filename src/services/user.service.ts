@@ -36,7 +36,7 @@ export async function getUserById(req: Request, res: Response) {
 export async function updateUser(req: Request, res: Response) {
     try {
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
-            res.status(400).json({ error: true, message: "Invalid wish ID." });
+            res.status(400).json({ error: true, message: "Invalid user ID." });
             return;
         }
 
@@ -108,7 +108,7 @@ export async function updateUser(req: Request, res: Response) {
 export async function deleteUser(req: Request, res: Response) {
     try {
         if (!req.params.id || isNaN(parseInt(req.params.id))) {
-            res.status(400).json({ error: true, message: "Invalid wish ID." });
+            res.status(400).json({ error: true, message: "Invalid user ID." });
             return;
         }
 
