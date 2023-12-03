@@ -1,6 +1,6 @@
 import type { Server, Socket } from "socket.io";
 
-import { chat, joinRoom, leaveRoom } from "./chat";
+import { chat, deleteChat, joinRoom, leaveRoom } from "./chat";
 
 const socketConnect = (socket: Socket) => {
     const req = socket.request;
@@ -18,6 +18,7 @@ const socketConnect = (socket: Socket) => {
     socket.on("disconnect", leaveRoom);
     socket.on("joinRoom", joinRoom);
     socket.on("chat", chat);
+    socket.on("deleteChat", deleteChat);
 };
 
 export const initSocket = (io: Server) => {

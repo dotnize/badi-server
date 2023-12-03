@@ -25,7 +25,8 @@ export async function getChatRoomByUserId(req: Request, res: Response) {
             with: {
                 lastMessagePreview: {
                     orderBy: (chatMessage, { desc }) => [desc(chatMessage.id)],
-                    where: (chatMessage, { eq }) => eq(chatMessage.id, chatRoom.id),
+                    where: (chatMessage, { eq, and, isNull }) =>
+                        and(eq(chatMessage.id, chatRoom.id), isNull(chatMessage.isDeleted)),
                     limit: 1,
                 },
                 member1: true,
@@ -55,7 +56,8 @@ export async function getChatRoomById(req: Request, res: Response) {
             with: {
                 lastMessagePreview: {
                     orderBy: (chatMessage, { desc }) => [desc(chatMessage.id)],
-                    where: (chatMessage, { eq }) => eq(chatMessage.id, chatRoom.id),
+                    where: (chatMessage, { eq, and, isNull }) =>
+                        and(eq(chatMessage.id, chatRoom.id), isNull(chatMessage.isDeleted)),
                     limit: 1,
                 },
                 member1: true,
