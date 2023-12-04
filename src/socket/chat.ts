@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { DisconnectReason, Socket } from "socket.io";
 import { db } from "~/db/drizzle";
 import { chatMessage } from "~/db/schema";
@@ -10,7 +10,7 @@ export async function joinRoom(this: Socket, roomId: number) {
         await this.join(roomId.toString());
 
         const latestMessages: ChatMessage[] = await db.query.chatMessage.findMany({
-            where: eq(chatMessage.chatRoomId, roomId),
+            where: and(eq(chatMessage.chatRoomId, roomId), isNull(chatMessage.isDeleted)),
         });
 
         this.emit("latestMessages", latestMessages);
@@ -40,7 +40,7 @@ export async function getLatestMessages(this: Socket) {
         }
 
         const latestMessages: ChatMessage[] = await db.query.chatMessage.findMany({
-            where: eq(chatMessage.chatRoomId, roomId),
+            where: and(eq(chatMessage.chatRoomId, roomId), isNull(chatMessage.isDeleted)),
         });
 
         this.emit("latestMessages", latestMessages);
@@ -81,6 +81,21 @@ export async function chat(this: Socket, content: string) {
         };
 
         io.to(roomId.toString()).emit("chat", newMessage);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export async function deleteChat(this: Socket, messageId: number) {
+    try {
+        await db.update(chatMessage).set({ isDeleted: true }).where(eq(chatMessage.id, messageId));
+
+        const roomId = parseInt(Array.from(this.rooms)[1]);
+        const latestMessages: ChatMessage[] = await db.query.chatMessage.findMany({
+            where: and(eq(chatMessage.chatRoomId, roomId), isNull(chatMessage.isDeleted)),
+        });
+
+        io.to(roomId.toString()).emit("latestMessages", latestMessages);
     } catch (err) {
         console.log(err);
     }

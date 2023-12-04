@@ -1,4 +1,4 @@
-import { eq, or } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { db } from "~/db/drizzle";
 import { chatRoom } from "~/db/schema";
@@ -25,7 +25,8 @@ export async function getChatRoomByUserId(req: Request, res: Response) {
             with: {
                 lastMessagePreview: {
                     orderBy: (chatMessage, { desc }) => [desc(chatMessage.id)],
-                    where: (chatMessage, { eq }) => eq(chatMessage.id, chatRoom.id),
+                    where: (chatMessage, { eq, and, isNull }) =>
+                        and(eq(chatMessage.id, chatRoom.id), isNull(chatMessage.isDeleted)),
                     limit: 1,
                 },
                 member1: true,
@@ -55,7 +56,8 @@ export async function getChatRoomById(req: Request, res: Response) {
             with: {
                 lastMessagePreview: {
                     orderBy: (chatMessage, { desc }) => [desc(chatMessage.id)],
-                    where: (chatMessage, { eq }) => eq(chatMessage.id, chatRoom.id),
+                    where: (chatMessage, { eq, and, isNull }) =>
+                        and(eq(chatMessage.id, chatRoom.id), isNull(chatMessage.isDeleted)),
                     limit: 1,
                 },
                 member1: true,
@@ -86,6 +88,19 @@ export async function createChatRoom(req: Request, res: Response) {
 
         if (!member1Id || !member2Id || isNaN(parseInt(member1Id)) || isNaN(parseInt(member2Id))) {
             res.status(400).json({ error: true, message: "Invalid user IDs." });
+            return;
+        }
+
+        // search for existing chat room
+        const existingChatRoom: ChatRoom | undefined = await db.query.chatRoom.findFirst({
+            where: or(
+                and(eq(chatRoom.member1Id, member1Id), eq(chatRoom.member2Id, member2Id)),
+                and(eq(chatRoom.member1Id, member2Id), eq(chatRoom.member2Id, member1Id))
+            ),
+        });
+
+        if (existingChatRoom) {
+            res.status(200).json(existingChatRoom);
             return;
         }
 

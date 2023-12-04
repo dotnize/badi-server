@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { Request, Response } from "express";
 
 import { db } from "~/db/drizzle";
@@ -43,7 +43,7 @@ export async function login(req: Request, res: Response) {
 
         // check if email exists
         const foundUser = await db.query.user.findFirst({
-            where: eq(user.email, emailInput),
+            where: and(eq(user.email, emailInput), isNull(user.isDeleted)),
         });
         if (!foundUser) {
             res.status(404).json({ error: true, message: "Invalid email." });
