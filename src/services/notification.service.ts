@@ -61,25 +61,27 @@ export async function getNotificationById(req: Request, res: Response) {
 // PUT /notification/:id   - req.params.id and req.body
 export async function updateNotification(req: Request, res: Response) {
     try {
-        // TODO input validation from "req" object, business logic, then respond using "res" object
-        // validation examples:
-        // - check if notification exists using id
-        // - check if current session user owns the notification (compare req.session.userId and notification.userId)
-        // then req.body should contain the new values for the update query
-        const notificationId = parseInt(req.params.id, 10); // Convert to number
+        const notificationId = parseInt(req.params.id, 10);
         const updatedNotificationData: Partial<Notification> = req.body;
 
-        // Example: Check if notificationId and updated data are provided
         if (isNaN(notificationId) || Object.keys(updatedNotificationData).length === 0) {
             res.status(400).json({ error: true, message: "Invalid request." });
             return;
         }
 
-        // Business logic: Update the notification with the new data
-        await db
-            .update(notification)
-            .set(updatedNotificationData)
-            .where(eq(notification.id, notificationId));
+        // If is_deleted is included in the update, set it accordingly
+        if ("is_deleted" in updatedNotificationData && updatedNotificationData["is_deleted"]) {
+            await db
+                .update(notification)
+                .set({ isDeleted: true }) // Change to isDeleted
+                .where(eq(notification.id, notificationId));
+        } else {
+            // Otherwise, update other fields
+            await db
+                .update(notification)
+                .set(updatedNotificationData)
+                .where(eq(notification.id, notificationId));
+        }
 
         res.status(200).json({ success: true, message: "Notification updated successfully." });
     } catch (err) {
