@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { db } from "~/db/drizzle";
 import { wish } from "~/db/schema";
@@ -13,7 +13,10 @@ type WishGet = Expand<Wish & { user: User }>;
 export async function getAllWish(req: Request, res: Response) {
     try {
         // WishGet type so the referenced User object is included (for the frontend UI)
-        const resultWishes: WishGet[] = await db.query.wish.findMany({ with: { user: true } });
+        const resultWishes: WishGet[] = await db.query.wish.findMany({
+            where: isNull(wish.isDeleted),
+            with: { user: true },
+        });
         res.status(200).json(resultWishes);
     } catch (err) {
         console.error(err);
@@ -35,7 +38,7 @@ export async function getWishByUserId(req: Request, res: Response) {
 
         // get wishes by user id
         const resultWishes: WishGet[] = await db.query.wish.findMany({
-            where: eq(wish.userId, userId),
+            where: and(eq(wish.userId, userId), isNull(wish.isDeleted)),
             with: { user: true },
         });
 
@@ -61,7 +64,7 @@ export async function getWishById(req: Request, res: Response) {
 
         // get wish by id, and it's possibly nonexistent (undefined type)
         const wishResult: WishGet | undefined = await db.query.wish.findFirst({
-            where: eq(wish.id, id),
+            where: and(eq(wish.id, id), isNull(wish.isDeleted)),
             with: { user: true },
         });
 
@@ -207,7 +210,9 @@ export async function deleteWish(req: Request, res: Response) {
         }
 
         // goodbye philippines
-        await db.delete(wish).where(eq(wish.id, id));
+        //await db.delete(wish).where(eq(wish.id, id));
+        // TODO after appdev
+        await db.update(wish).set({ isDeleted: true }).where(eq(wish.id, id));
 
         // respond with the deleted wish object
         res.status(200).json(currentWish);
