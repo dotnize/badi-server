@@ -12,5 +12,7 @@ router
 
 router.get("/user/:id", tradeGroupService.getTradeGroupByUserId);
 router.post("/", tradeGroupService.createTradeGroup);
+router.put("/swap/:id", tradeGroupService.updateUserIdInTradeGroup);
+
 
 export default router;

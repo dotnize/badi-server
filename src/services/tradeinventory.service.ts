@@ -250,3 +250,63 @@ export async function deleteTradeInventory(req: Request, res: Response) {
         res.status(500).json({ error: true, message: "Internal server error." });
     }
 }
+
+
+
+
+// DELETE /tradeinventory/group/:id    - req.params.id
+export async function deleteTradeInventoryByTradeGroupId(req: Request, res: Response) {
+    try {
+        const id = parseInt(req.params.id);
+
+        if (!id || isNaN(id)) {
+            res.status(400).json({ error: true, message: "Invalid trade group ID." });
+            return;
+        }
+
+        //const sessionUserId = req.session.user.id; // TODO
+        const sessionUserId = 2;
+
+        // check if trade inventory exists
+        const currentTradeInventories: TradeInventory[] =
+            await db.query.tradeInventory.findMany({
+                where: and(eq(tradeInventory.tradeGroupId, id), isNull(tradeInventory.isDeleted)),
+            });
+
+
+
+        // if undefined/nonexistent
+        if (!currentTradeInventories) {
+            res.status(404).json({ error: true, message: "Trade inventory by given tradegroup ID does not exist." });
+            return;
+        }
+
+        if (
+            sessionUserId !== currentTradeInventories[0].receiverId &&
+            sessionUserId !== currentTradeInventories[1].senderId
+        ) {
+            res.status(403).json({
+                error: true,
+                message: "You are part of this trade group.",
+            });
+            return;
+        }
+
+        // goodbye philippines
+        //await db.delete(tradeInventory).where(eq(tradeInventory.id, id));
+        // TODO
+
+        // currentTradeInventories.map(async (tradeinventory)=>{
+        //     await db.update(tradeInventory).set({ isDeleted: true }).where(eq(tradeInventory.id, id));
+        // })
+
+        await Promise.all(currentTradeInventories.map(async (tradeinventory) => {
+            await db.update(tradeInventory).set({ isDeleted: true }).where(eq(tradeInventory.id, tradeinventory.id));
+        }));
+
+        res.status(200).json(currentTradeInventories);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: true, message: "Internal server error." });
+    }
+}

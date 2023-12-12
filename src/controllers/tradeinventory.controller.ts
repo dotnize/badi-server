@@ -10,7 +10,10 @@ router
     .put(tradeInventoryService.updateTradeInventory)
     .delete(tradeInventoryService.deleteTradeInventory);
 
-router.get("/group/:id", tradeInventoryService.getTradeInventoryByGroupId);
+router
+    .route("/group/:id", )
+    .get(tradeInventoryService.getTradeInventoryByGroupId)
+    .delete(tradeInventoryService.deleteTradeInventoryByTradeGroupId)
 router.post("/", tradeInventoryService.createTradeInventory);
 
 export default router;
