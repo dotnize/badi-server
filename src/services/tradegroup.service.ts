@@ -199,6 +199,77 @@ export async function updateTradeGroup(req: Request, res: Response) {
     }
 }
 
+// PUT /tradegroup/swap/:id   - req.params.id and req.body
+export async function updateUserIdInTradeGroup(req: Request, res: Response) {
+    try {
+        const id = parseInt(req.params.id);
+
+        if (!id || isNaN(id)) {
+            res.status(400).json({ error: true, message: "Invalid trade group ID." });
+            return;
+        }
+
+        // check if trade group exists
+        const currentTradeGroup: TradeGroup | undefined = await db.query.tradeGroup.findFirst({
+            where: eq(tradeGroup.id, id),
+        });
+
+        // if undefined/nonexistent
+        if (!currentTradeGroup) {
+            res.status(404).json({ error: true, message: "Trade group does not exist." });
+            return;
+        }
+
+        // check if current session user is part of trade group
+        //const sessionUserId = req.session.user.id; // TODO
+        // const sessionUserId = 2;
+        // if (
+        //     sessionUserId !== currentTradeGroup.user1Id &&
+        //     sessionUserId !== currentTradeGroup.user2Id
+        // ) {
+        //     res.status(403).json({ error: true, message: "You are not part of this trade group." });
+        //     return;
+        // }
+
+        await db.update(tradeGroup).set({ user1Id: currentTradeGroup.user2Id, user2Id: currentTradeGroup.user1Id }).where(eq(tradeGroup.id, id));
+
+
+        // NOTE: When updating a tradegroup's user IDs, all inventories must be included in the same request.
+        const { tradeInventories } = req.body;
+        if (
+            !tradeInventories ||
+            !Array.isArray(tradeInventories) ||
+            tradeInventories.length === 0
+        ) {
+            res.status(400).json({ error: true, message: "No trade inventories provided." });
+            return;
+        }
+
+        // insert trade inventories
+        const tradeInvs = tradeInventories.map((inv) => {
+            // TODO proper validation, and check if IDs exist?
+            return {
+                tradeGroupId: id,
+                senderId: inv.senderId,
+                receiverId: inv.receiverId,
+                inventoryId: inv.inventoryId,
+                totalQuantity: inv.totalQuantity,
+                completedQuantity: 0,
+                isCompleted: false,
+            };
+        });
+        await db.insert(tradeInventory).values(tradeInvs);
+        //end
+
+        const updatedTradeGroup: TradeGroup = { ...currentTradeGroup };
+
+        res.status(200).json(updatedTradeGroup);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: true, message: "Internal server error." });
+    }
+}
+
 // DELETE /tradegroup/:id    - req.params.id
 export async function deleteTradeGroup(req: Request, res: Response) {
     try {
