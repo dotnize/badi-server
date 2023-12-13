@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { db } from "~/db/drizzle";
 import { notification } from "~/db/schema";
@@ -19,7 +19,7 @@ export async function getNotificationByUserId(req: Request, res: Response) {
 
         // Business logic: Retrieve notifications for the specified user
         const userNotifications = await db.query.notification.findMany({
-            where: eq(notification.userId, userId),
+            where: and(eq(notification.userId, userId), isNull(notification.isDeleted)),
         });
 
         res.status(200).json(userNotifications);
@@ -43,7 +43,7 @@ export async function getNotificationById(req: Request, res: Response) {
 
         // Business logic: Retrieve a specific notification by ID
         const foundNotification = await db.query.notification.findFirst({
-            where: eq(notification.id, notificationId),
+            where: and(eq(notification.id, notificationId), isNull(notification.isDeleted)),
         });
 
         if (!foundNotification) {
