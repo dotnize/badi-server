@@ -1,7 +1,7 @@
 import { and, eq, isNull, or } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { db } from "~/db/drizzle";
-import { tradeGroup, tradeInventory, user } from "~/db/schema";
+import { notification, tradeGroup, tradeInventory, user } from "~/db/schema";
 import { Expand, TradeGroup, User } from "~/lib/types";
 
 // for the GET endpoints, we should include the referenced User objects for the response (based on the frontend's types)
@@ -187,6 +187,26 @@ export async function updateTradeGroup(req: Request, res: Response) {
 
         await db.update(tradeGroup).set({ status }).where(eq(tradeGroup.id, id));
 
+        if (currentTradeGroup.status !== "completed" && status === "completed") {
+            const partialNotif = {
+                type: "finishtrade",
+                timestamp: new Date(),
+                content: { tradeGroupId: id },
+                isRead: false,
+            };
+            // insert notification
+            await db.insert(notification).values([
+                {
+                    ...partialNotif,
+                    userId: currentTradeGroup.user1Id,
+                },
+                {
+                    ...partialNotif,
+                    userId: currentTradeGroup.user2Id,
+                },
+            ]);
+        }
+
         const updatedTradeGroup: TradeGroup = { ...currentTradeGroup, status };
 
         res.status(200).json(updatedTradeGroup);
@@ -228,8 +248,10 @@ export async function updateUserIdInTradeGroup(req: Request, res: Response) {
         //     return;
         // }
 
-        await db.update(tradeGroup).set({ user1Id: currentTradeGroup.user2Id, user2Id: currentTradeGroup.user1Id }).where(eq(tradeGroup.id, id));
-
+        await db
+            .update(tradeGroup)
+            .set({ user1Id: currentTradeGroup.user2Id, user2Id: currentTradeGroup.user1Id })
+            .where(eq(tradeGroup.id, id));
 
         // NOTE: When updating a tradegroup's user IDs, all inventories must be included in the same request.
         const { tradeInventories } = req.body;
