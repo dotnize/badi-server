@@ -1,4 +1,4 @@
-import { like, or } from "drizzle-orm";
+import { and, like, ne, or } from "drizzle-orm";
 import { db } from "~/db/drizzle";
 import { inventory, notification } from "~/db/schema";
 import { Inventory } from "./types";
@@ -21,15 +21,20 @@ export async function findMatch(
 
         // TODO: proper keyword matching, for now only first keyword is searched
         const match: Inventory | undefined = await db.query.inventory.findFirst({
-            where: or(
-                //like(inventory.keywords, `%${keywords[0]}%`),
-                like(inventory.name, `%${keywords[0]}%`),
-                like(inventory.description, `%${keywords[0]}%`),
-                like(inventory.preferredOffer, `%${keywords[0]}%`),
-                //preferredOffer ? like(inventory.keywords, `%${preferredOffer}%`) : undefined,
-                preferredOffer ? like(inventory.name, `%${preferredOffer}%`) : undefined,
-                preferredOffer ? like(inventory.description, `%${preferredOffer}%`) : undefined,
-                preferredOffer ? like(inventory.preferredOffer, `%${preferredOffer}%`) : undefined
+            where: and(
+                or(
+                    //like(inventory.keywords, `%${keywords[0]}%`),
+                    like(inventory.name, `%${keywords[0]}%`),
+                    like(inventory.description, `%${keywords[0]}%`),
+                    like(inventory.preferredOffer, `%${keywords[0]}%`),
+                    //preferredOffer ? like(inventory.keywords, `%${preferredOffer}%`) : undefined,
+                    preferredOffer ? like(inventory.name, `%${preferredOffer}%`) : undefined,
+                    preferredOffer ? like(inventory.description, `%${preferredOffer}%`) : undefined,
+                    preferredOffer
+                        ? like(inventory.preferredOffer, `%${preferredOffer}%`)
+                        : undefined
+                ),
+                ne(inventory.userId, fromUserId)
             ),
         });
 
@@ -47,20 +52,22 @@ export async function findMatch(
         console.log(`match description: ${match.description}`);
 
         // add notifications to db
-        db.insert(notification).values({
-            userId: fromUserId,
-            type: "match",
-            timestamp: new Date(),
-            isRead: false,
-            content: { matchedUserId: match.userId, toReceiveIds: [match.id], toSendIds: [id] },
-        });
-        db.insert(notification).values({
-            userId: match.userId,
-            type: "match",
-            timestamp: new Date(),
-            isRead: false,
-            content: { matchedUserId: fromUserId, toReceiveIds: [id], toSendIds: [match.id] },
-        });
+        await db.insert(notification).values([
+            {
+                userId: fromUserId,
+                type: "match",
+                timestamp: new Date(),
+                isRead: false,
+                content: { matchedUserId: match.userId, toReceiveIds: [match.id], toSendIds: [id] },
+            },
+            {
+                userId: match.userId,
+                type: "match",
+                timestamp: new Date(),
+                isRead: false,
+                content: { matchedUserId: fromUserId, toReceiveIds: [id], toSendIds: [match.id] },
+            },
+        ]);
     } catch (err) {
         console.error(err);
     }
